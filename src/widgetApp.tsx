@@ -1,6 +1,7 @@
 import { useState } from "react";
 import styles from "./widget.module.css";
 import VisitorForm from "./components/VisitorForm";
+import { checkWidgetInit } from "./api/chat";
 import { ChatMessage } from "./components/ChatMessage";
 
 export function WidgetApp() {
@@ -10,6 +11,14 @@ export function WidgetApp() {
   const [available, setAvailable] = useState<boolean>(false);
 
   const handleClick = async () => {
+    try {
+      const result = await checkWidgetInit();
+      if (result.success) setAvailable(true);
+    } catch (err) {
+      console.error(err);
+      setAvailable(false);
+      //alert("위젯 상태를 확인할 수 없습니다.");
+    }
     setOpen(true);
   };
 
