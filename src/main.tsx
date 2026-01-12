@@ -1,10 +1,13 @@
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
-import './index.css'
-import App from './App.tsx'
+import React from "react";
+import ReactDOM from "react-dom/client";
+import { WidgetApp } from "./widgetApp";
 
-createRoot(document.getElementById('root')!).render(
-  <StrictMode>
-    <App />
-  </StrictMode>,
-)
+const root = document.createElement("div");
+root.id = "__dadachat_widget_root__";
+document.body.appendChild(root);
+
+ReactDOM.createRoot(root).render(
+  <React.StrictMode>
+    <WidgetApp />
+  </React.StrictMode>
+);

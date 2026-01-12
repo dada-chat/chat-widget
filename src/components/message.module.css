@@ -1,0 +1,48 @@
+.messageItem {
+  display: flex;
+  flex-direction: column;
+}
+.messageItemLeft {
+  justify-content: flex-start;
+  align-items: flex-start;
+}
+.messageItemRight {
+  justify-content: flex-end;
+}
+.messageItemCenter {
+  justify-content: center;
+}
+.message {
+  margin: 8px 0;
+  padding: 12px;
+  max-width: 70%;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.08);
+  font-size: 14px;
+  font-weight: 500;
+}
+.message p {
+  margin: 0;
+  word-break: break-all;
+  white-space: pre-line;
+}
+.messageLeft {
+  border: 1px solid #d1d5dc;
+  background: #fff;
+  border-radius: 0 16px 16px 16px;
+}
+.messageRight {
+  background: #fff;
+  border-radius: 16px 0 16px 16px;
+}
+.messageCenter {
+  font-size: 12px;
+  padding: 8px 16px;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: none;
+  color: #888;
+}
+.messageTime {
+  font-size: 10px;
+  color: #bcbcbc;
+}
