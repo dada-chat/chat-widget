@@ -9,7 +9,7 @@ export const getWidgetConfig = (): WidgetConfig => {
   return {
     siteKey:
       scriptTag?.dataset.dadachatSiteKey ||
-      "e5a76b7c-58f4-4f82-af5a-4047e2fcca4e",
+      "67cf9dd7-564a-4f89-a038-95c89230a66f",
     apiBaseUrl:
       scriptTag?.dataset.dadachatApiBase || "http://localhost:4000/api",
   };

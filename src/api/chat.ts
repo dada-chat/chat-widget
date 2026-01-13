@@ -1,17 +1,5 @@
+import type { ChattingRoomResponse, WidgetInitResponse } from "../types/api";
 import { widgetApi } from "./axios";
-
-export interface WidgetInitResponse {
-  success: boolean;
-  data: {
-    organizationId: string;
-  };
-  message?: string;
-}
-
-export interface VisitorInfo {
-  name: string;
-  email: string;
-}
 
 // 위젯 사용 가능 여부 확인
 export const checkWidgetInit = async () => {
@@ -24,4 +12,16 @@ export const checkWidgetInit = async () => {
       data: {},
     };
   }
+};
+
+// 채팅방 생성/접속
+export const joinChattingRoom = async (data: {
+  name: string;
+  email: string;
+}) => {
+  const response = await widgetApi.post<ChattingRoomResponse>("/widget/init", {
+    name: data.name,
+    email: data.email,
+  });
+  return response.data;
 };

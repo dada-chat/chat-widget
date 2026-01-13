@@ -8,9 +8,11 @@
 }
 .messageItemRight {
   justify-content: flex-end;
+  align-items: flex-end;
 }
 .messageItemCenter {
   justify-content: center;
+  align-items: center;
 }
 .message {
   margin: 8px 0;
