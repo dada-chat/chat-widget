@@ -1,4 +1,4 @@
-import type { ChattingRoom } from "./chat";
+import type { ChattingRoom, Message } from "./chat";
 
 export interface BaseResponse {
   success: boolean;
@@ -13,4 +13,11 @@ export interface WidgetInitResponse extends BaseResponse {
 
 export interface ChattingRoomResponse extends BaseResponse {
   data: ChattingRoom | null;
+}
+
+export interface MessagesResponse extends BaseResponse {
+  data: Message[];
+}
+export interface MessageResponse extends BaseResponse {
+  data: Message;
 }
