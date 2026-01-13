@@ -1,14 +1,5 @@
 import type { UserRole, SenderType, ChattingRoomStatus } from "./common";
 
-export interface Domain {
-  id: string;
-  domainUrl: string;
-  siteKey: string;
-  isActive: boolean;
-  organizationId: string;
-  createdAt: string;
-}
-
 export interface Message {
   id: string;
   content: string;
@@ -23,14 +14,6 @@ export interface Visitor {
   email: string;
   name: string;
   createdAt: Date;
-}
-
-export interface AssignedUser {
-  id: string;
-  email: string;
-  name: string;
-  role: UserRole;
-  lastAnsweredAt?: Date;
 }
 
 export interface ChattingRoom {

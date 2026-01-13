@@ -4,12 +4,20 @@ import MessageForm from "./MessageForm";
 import { formatChatDate } from "../utils/date";
 import { ChatMessage } from "./ChatMessage";
 import styles from "../widget.module.css";
+import { getMessages } from "../api/chat";
 
 export default function ChattingRoom() {
-  const { roomId, messages, addMessage } = useChatStore();
+  const { roomId, messages, setMessages, addMessage } = useChatStore();
 
   useEffect(() => {
     if (!roomId) return;
+
+    const fetchMessages = async () => {
+      const result = await getMessages(roomId);
+      setMessages(result.data);
+    };
+
+    fetchMessages();
   }, [roomId, addMessage]);
 
   const scrollRef = useRef<HTMLDivElement>(null);

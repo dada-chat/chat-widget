@@ -28,7 +28,7 @@ export default function VisitorForm() {
           email,
         });
 
-        setMessages(result.data.conversation.messages);
+        // setMessages(result.data.conversation.messages);
       }
     } catch (err) {
       console.error(err);
