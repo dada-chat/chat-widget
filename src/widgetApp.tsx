@@ -3,12 +3,21 @@ import styles from "./widget.module.css";
 import VisitorForm from "./components/VisitorForm";
 import { checkWidgetInit } from "./api/chat";
 import { ChatMessage } from "./components/ChatMessage";
+import { useChatStore } from "./store/chatStore";
+import ChattingRoom from "./components/ChattingRoom";
 
 export function WidgetApp() {
   console.log("WidgetApp render");
 
   const [open, setOpen] = useState(false);
   const [available, setAvailable] = useState<boolean>(false);
+
+  const { roomId, reset } = useChatStore();
+
+  const handleClose = () => {
+    reset(); // store 초기화
+    setOpen(false);
+  };
 
   const handleClick = async () => {
     try {
@@ -28,27 +37,28 @@ export function WidgetApp() {
         <div className={styles.chatWindow}>
           <div className={styles.header}>
             상담 채팅
-            <button
-              className={styles.closeButton}
-              onClick={() => setOpen(false)}
-            >
+            <button className={styles.closeButton} onClick={handleClose}>
               <img src="/images/ico_close.svg" alt="닫기" />
             </button>
           </div>
           {open && available && (
             <div className={styles.widgetContent}>
-              <div className={styles.chatList}>
-                <div className={styles.bubble}>
-                  <ChatMessage
-                    content={`안녕하세요 :)
-                    상담을 시작하기 전에, 간단한 기본 정보를 입력해 주세요.`}
-                    senderType="USER"
-                  />
+              {!roomId ? (
+                <div className={styles.chatList}>
+                  <div className={styles.bubble}>
+                    <ChatMessage
+                      content={`안녕하세요 :)
+상담을 시작하기 전에, 간단한 기본 정보를 입력해 주세요.`}
+                      senderType="USER"
+                    />
+                  </div>
+                  <div className={styles.bubble}>
+                    <VisitorForm />
+                  </div>
                 </div>
-                <div className={styles.bubble}>
-                  <VisitorForm />
-                </div>
-              </div>
+              ) : (
+                <ChattingRoom />
+              )}
             </div>
           )}
           {open && available === false && (

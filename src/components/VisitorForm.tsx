@@ -1,16 +1,39 @@
 import React, { useState } from "react";
+import { joinChattingRoom } from "../api/chat";
+import { useChatStore } from "../store/chatStore";
+import ChattingRoom from "./ChattingRoom";
 import FormInput from "./FormInput";
 import styles from "./form.module.css";
 import clsx from "clsx";
-import type { VisitorInfo } from "../api/chat";
 
 export default function VisitorForm() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+  const { setSession, setMessages } = useChatStore();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const visitor: VisitorInfo = { name, email };
+
+    if (!name.trim() || !email.trim()) {
+      setErrorMessage("이름과 이메일을 모두 입력해 주세요.");
+      return;
+    }
+    try {
+      const result = await joinChattingRoom({ name, email });
+      if (result.success && result.data) {
+        setSession(result.data.conversation.id, {
+          id: result.data.visitor.id,
+          name,
+          email,
+        });
+
+        setMessages(result.data.conversation.messages);
+      }
+    } catch (err) {
+      console.error(err);
+      setErrorMessage("현재 채팅방 생성/접속 이용이 불가능합니다.");
+    }
   };
 
   return (
@@ -34,7 +57,14 @@ export default function VisitorForm() {
             onChange={setName}
           />
         </div>
-        <button type="submit">작성 완료</button>
+        {errorMessage && (
+          <p className={clsx(styles.helper, styles.helperError)}>
+            {errorMessage}
+          </p>
+        )}
+        <button type="submit" disabled={errorMessage ? true : false}>
+          작성 완료
+        </button>
       </div>
     </form>
   );

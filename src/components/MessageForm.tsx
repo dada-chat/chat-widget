@@ -31,7 +31,9 @@ export default function MessageForm() {
           onChange={setText}
           onKeyDown={(e) => handleKeyPress(e)}
         />
-        <button type="submit">전송</button>
+        <button type="submit">
+          <img src="/images/ico_send.svg" />
+        </button>
       </div>
     </form>
   );

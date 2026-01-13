@@ -33,6 +33,10 @@
 .massageWrap {
   display: flex;
   gap: 8px;
+  border-radius: 0;
+  border-width: 1px 0 0 0;
+  box-shadow: none;
+  border-color: #ededed;
 }
 
 /* Input */
