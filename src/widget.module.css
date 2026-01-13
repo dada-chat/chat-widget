@@ -62,6 +62,7 @@
 
 .widgetContent {
   flex: 1;
+  height: calc(100% - 56px);
   display: flex;
   flex-direction: column;
   height: 100%;

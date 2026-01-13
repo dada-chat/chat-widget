@@ -1,7 +1,7 @@
-import {
-  type ChattingRoomResponse,
-  type WidgetInitResponse,
-  type MessagesResponse,
+import type {
+  ChattingRoomResponse,
+  WidgetInitResponse,
+  MessagesResponse,
   MessageResponse,
 } from "../types/api";
 import { widgetApi } from "./axios";
