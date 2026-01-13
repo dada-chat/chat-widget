@@ -2,18 +2,37 @@ import { useState } from "react";
 import styles from "./form.module.css";
 import FormInput from "./FormInput";
 import clsx from "clsx";
+import { useChatStore } from "../store/chatStore";
+import { getMessages, sendMessage } from "../api/chat";
 
 export default function MessageForm() {
   const [text, setText] = useState("");
+  const { roomId, visitor, setMessages } = useChatStore();
 
-  const handleSubmit = () => {
-    if (!text.trim()) return;
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!roomId || !visitor || !text.trim()) return;
+
+    try {
+      const result = await sendMessage(roomId, visitor?.id, text);
+
+      if (result.success) {
+        setText("");
+
+        const result = await getMessages(roomId);
+        if (result.success) setMessages(result.data);
+      }
+    } catch (err) {
+      console.error(err);
+    }
+
     setText("");
   };
 
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
-      handleSubmit();
+      handleSubmit(e);
     }
   };
 

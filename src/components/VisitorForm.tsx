@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { joinChattingRoom } from "../api/chat";
 import { useChatStore } from "../store/chatStore";
-import ChattingRoom from "./ChattingRoom";
 import FormInput from "./FormInput";
 import styles from "./form.module.css";
 import clsx from "clsx";

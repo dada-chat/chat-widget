@@ -18,3 +18,6 @@ export interface ChattingRoomResponse extends BaseResponse {
 export interface MessagesResponse extends BaseResponse {
   data: Message[];
 }
+export interface MessageResponse extends BaseResponse {
+  data: Message;
+}

@@ -1,7 +1,8 @@
-import type {
-  ChattingRoomResponse,
-  WidgetInitResponse,
-  MessagesResponse,
+import {
+  type ChattingRoomResponse,
+  type WidgetInitResponse,
+  type MessagesResponse,
+  MessageResponse,
 } from "../types/api";
 import { widgetApi } from "./axios";
 
@@ -44,7 +45,30 @@ export const joinChattingRoom = async (data: {
 export const getMessages = async (conversationId: string) => {
   try {
     const response = await widgetApi.get<MessagesResponse>(
-      `/widget/${conversationId}/messages`
+      `/widget/${conversationId}`
+    );
+    return response.data;
+  } catch (error) {
+    return {
+      success: false,
+      data: [],
+    };
+  }
+};
+
+// 메세지 전송
+export const sendMessage = async (
+  conversationId: string,
+  visitorId: string,
+  content: string
+) => {
+  try {
+    const response = await widgetApi.post<MessageResponse>(
+      `/widget/${conversationId}/message`,
+      {
+        visitorId,
+        content,
+      }
     );
     return response.data;
   } catch (error) {
