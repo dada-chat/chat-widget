@@ -5,6 +5,7 @@ import { formatChatDate } from "../utils/date";
 import { ChatMessage } from "./ChatMessage";
 import styles from "../widget.module.css";
 import { getMessages } from "../api/chat";
+import { getSocket } from "../lib/socket";
 
 export default function ChattingRoom() {
   const { roomId, messages, setMessages, addMessage } = useChatStore();
@@ -14,11 +15,11 @@ export default function ChattingRoom() {
 
     const fetchMessages = async () => {
       const result = await getMessages(roomId);
-      setMessages(result.data);
+      setMessages(result.data.reverse());
     };
 
     fetchMessages();
-  }, [roomId, addMessage]);
+  }, [roomId, setMessages]);
 
   const scrollRef = useRef<HTMLDivElement>(null);
 
@@ -28,13 +29,32 @@ export default function ChattingRoom() {
     }
   }, [messages]);
   const hasMessages = messages && messages.length > 0;
-  const displayMessages = hasMessages ? [...messages].reverse() : [];
+
+  useEffect(() => {
+    if (!roomId) return;
+
+    const socket = getSocket();
+
+    if (!socket.connected) {
+      socket.connect();
+    }
+
+    socket.emit("join_chattingroom", roomId);
+
+    socket.on("message_received", (newMessage) => {
+      addMessage(newMessage);
+    });
+
+    return () => {
+      socket.off("message_received");
+    };
+  }, [roomId, addMessage]);
 
   return (
     <>
       <div ref={scrollRef} className={styles.chatList}>
         {hasMessages &&
-          displayMessages.map((item) => {
+          messages.map((item) => {
             return (
               <ChatMessage
                 key={item.id}

@@ -7,7 +7,7 @@ import { getMessages, sendMessage } from "../api/chat";
 
 export default function MessageForm() {
   const [text, setText] = useState("");
-  const { roomId, visitor, setMessages } = useChatStore();
+  const { roomId, visitor } = useChatStore();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -17,12 +17,7 @@ export default function MessageForm() {
     try {
       const result = await sendMessage(roomId, visitor?.id, text);
 
-      if (result.success) {
-        setText("");
-
-        const result = await getMessages(roomId);
-        if (result.success) setMessages(result.data);
-      }
+      if (result.success) setText("");
     } catch (err) {
       console.error(err);
     }
