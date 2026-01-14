@@ -1,4 +1,5 @@
 import type { ChattingRoom, Message } from "./chat";
+import type { ChattingRoomStatus } from "./common";
 
 export interface BaseResponse {
   success: boolean;
@@ -16,7 +17,14 @@ export interface ChattingRoomResponse extends BaseResponse {
 }
 
 export interface MessagesResponse extends BaseResponse {
-  data: Message[];
+  data: {
+    conversationStatus: ChattingRoomStatus;
+    messageCursorResult: {
+      messages: Message[];
+      hasMore: boolean;
+      nextCursor: Date | null;
+    };
+  };
 }
 export interface MessageResponse extends BaseResponse {
   data: Message;

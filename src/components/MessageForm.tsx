@@ -3,27 +3,34 @@ import styles from "./form.module.css";
 import FormInput from "./FormInput";
 import clsx from "clsx";
 import { useChatStore } from "../store/chatStore";
-import { getMessages, sendMessage } from "../api/chat";
+import { sendMessage } from "../api/chat";
 
-export default function MessageForm() {
+interface MessageFormProps {
+  onSendSuccess?: () => void;
+}
+
+export default function MessageForm({ onSendSuccess }: MessageFormProps) {
   const [text, setText] = useState("");
-  const { roomId, visitor } = useChatStore();
+  const { roomId, visitor, chattingroomStatus } = useChatStore();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
     if (!roomId || !visitor || !text.trim()) return;
 
     try {
       const result = await sendMessage(roomId, visitor?.id, text);
 
-      if (result.success) setText("");
+      if (result.success) {
+        setText("");
+        onSendSuccess?.();
+      }
     } catch (err) {
       console.error(err);
     }
-
     setText("");
   };
+
+  console.log("chattingroomStatus:", chattingroomStatus);
 
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
@@ -40,12 +47,20 @@ export default function MessageForm() {
         <FormInput
           type="text"
           required
-          placeholder="메세지를 입력해주세요."
+          placeholder={
+            chattingroomStatus === "CLOSED"
+              ? "상담이 종료되었습니다."
+              : "메시지를 입력하세요"
+          }
           value={text}
           onChange={setText}
           onKeyDown={(e) => handleKeyPress(e)}
+          disabled={chattingroomStatus === "CLOSED" ? true : false}
         />
-        <button type="submit">
+        <button
+          type="submit"
+          disabled={chattingroomStatus === "CLOSED" ? true : false}
+        >
           <img src="/images/ico_send.svg" />
         </button>
       </div>

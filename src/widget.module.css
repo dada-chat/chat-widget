@@ -85,7 +85,16 @@
   overflow-y: auto;
   flex: 1;
 }
-
+.chatListReverse {
+  display: flex;
+  flex-direction: column-reverse;
+}
+.loadingArea p {
+  padding: 16px;
+  font-size: 13px;
+  color: #888;
+  text-align: center;
+}
 @keyframes fadeInUp {
   from {
     opacity: 0;

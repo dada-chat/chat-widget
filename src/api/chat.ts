@@ -44,16 +44,33 @@ export const joinChattingRoom = async (data: {
 };
 
 // 메세지 조회
-export const getMessages = async (conversationId: string) => {
+export const getMessages = async (
+  conversationId: string,
+  cursor?: Date,
+  limit: number = 30
+) => {
   try {
     const response = await widgetApi.get<MessagesResponse>(
-      `/api/widget/${conversationId}`
+      `/api/widget/${conversationId}`,
+      {
+        params: {
+          ...(cursor && { cursor }),
+          limit,
+        },
+      }
     );
     return response.data;
   } catch (error) {
     return {
       success: false,
-      data: [],
+      data: {
+        conversationStatus: "OPEN",
+        messageCursorResult: {
+          messages: [],
+          hasMore: false,
+          nextCursor: null,
+        },
+      },
     };
   }
 };
