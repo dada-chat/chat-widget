@@ -3,7 +3,7 @@ import styles from "./form.module.css";
 import FormInput from "./FormInput";
 import clsx from "clsx";
 import { useChatStore } from "../store/chatStore";
-import { getMessages, sendMessage } from "../api/chat";
+import { sendMessage } from "../api/chat";
 
 export default function MessageForm() {
   const [text, setText] = useState("");
