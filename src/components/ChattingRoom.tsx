@@ -6,30 +6,71 @@ import { ChatMessage } from "./ChatMessage";
 import styles from "../widget.module.css";
 import { getMessages } from "../api/chat";
 import { getSocket } from "../lib/socket";
+import clsx from "clsx";
 
 export default function ChattingRoom() {
-  const { roomId, messages, setMessages, addMessage } = useChatStore();
+  const {
+    roomId,
+    messages,
+    setMessages,
+    isLoadingPrev,
+    hasMore,
+    nextCursor,
+    addMessage,
+    setIsLoadingPrev,
+    prependMessages,
+  } = useChatStore();
 
   useEffect(() => {
     if (!roomId) return;
 
     const fetchMessages = async () => {
       const result = await getMessages(roomId);
-      setMessages(result.data.reverse());
+      if (result.success) setMessages(result.data);
     };
 
     fetchMessages();
   }, [roomId, setMessages]);
 
+  // ---- 여기서부터 스크롤 관련
   const scrollRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    if (scrollRef.current) {
-      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+  const handleScroll = async (e: React.UIEvent<HTMLDivElement>) => {
+    const target = e.currentTarget;
+
+    const distanceFromTop =
+      target.scrollHeight - target.scrollTop - target.clientHeight;
+
+    // 과거 메시지 쪽에 가까워지면
+    if (distanceFromTop < 100 && hasMore && !isLoadingPrev) {
+      setIsLoadingPrev(true);
+
+      const result = await getMessages(roomId!, nextCursor!);
+
+      if (result.success) {
+        prependMessages(
+          result.data.messages,
+          result.data.hasMore,
+          result.data.nextCursor
+        );
+      }
+
+      setIsLoadingPrev(false);
     }
-  }, [messages]);
+  };
+
+  const scrollToLatest = () => {
+    if (!scrollRef.current) return;
+    scrollRef.current.scrollTop = 0;
+  };
+
+  useEffect(() => {
+    scrollToLatest();
+  }, []);
+
   const hasMessages = messages && messages.length > 0;
 
+  // ----  소켓 관련
   useEffect(() => {
     if (!roomId) return;
 
@@ -52,7 +93,11 @@ export default function ChattingRoom() {
 
   return (
     <>
-      <div ref={scrollRef} className={styles.chatList}>
+      <div
+        ref={scrollRef}
+        onScroll={handleScroll}
+        className={clsx(styles.chatList, styles.chatListReverse)}
+      >
         {hasMessages &&
           messages.map((item) => {
             return (
@@ -64,8 +109,14 @@ export default function ChattingRoom() {
               />
             );
           })}
+
+        {isLoadingPrev && (
+          <div className={styles.loadingArea}>
+            <p>이전 메시지를 불러오는 중…</p>
+          </div>
+        )}
       </div>
-      <MessageForm />
+      <MessageForm onSendSuccess={scrollToLatest} />
     </>
   );
 }

@@ -5,23 +5,28 @@ import clsx from "clsx";
 import { useChatStore } from "../store/chatStore";
 import { sendMessage } from "../api/chat";
 
-export default function MessageForm() {
+interface MessageFormProps {
+  onSendSuccess?: () => void;
+}
+
+export default function MessageForm({ onSendSuccess }: MessageFormProps) {
   const [text, setText] = useState("");
   const { roomId, visitor } = useChatStore();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
     if (!roomId || !visitor || !text.trim()) return;
 
     try {
       const result = await sendMessage(roomId, visitor?.id, text);
 
-      if (result.success) setText("");
+      if (result.success) {
+        setText("");
+        onSendSuccess?.();
+      }
     } catch (err) {
       console.error(err);
     }
-
     setText("");
   };
 

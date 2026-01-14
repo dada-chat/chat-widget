@@ -16,7 +16,11 @@ export interface ChattingRoomResponse extends BaseResponse {
 }
 
 export interface MessagesResponse extends BaseResponse {
-  data: Message[];
+  data: {
+    messages: Message[];
+    hasMore: boolean;
+    nextCursor: Date | null;
+  };
 }
 export interface MessageResponse extends BaseResponse {
   data: Message;

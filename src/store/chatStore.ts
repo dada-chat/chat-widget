@@ -12,10 +12,25 @@ interface ChatState {
   visitor: Visitor | null;
   messages: Message[];
 
+  hasMore: boolean;
+  nextCursor: Date | null;
+  isLoadingPrev: boolean;
+  setIsLoadingPrev: (value: boolean) => void;
+
   setSession: (roomId: string, visitor: Visitor) => void;
 
-  setMessages: (messages: Message[]) => void;
+  setMessages: (payload: {
+    messages: Message[];
+    hasMore: boolean;
+    nextCursor: Date | null;
+  }) => void;
   addMessage: (message: Message) => void;
+
+  prependMessages: (
+    messages: Message[],
+    hasMore: boolean,
+    nextCursor: Date | null
+  ) => void;
 
   reset: () => void;
 }
@@ -24,24 +39,42 @@ export const useChatStore = create<ChatState>((set) => ({
   visitor: null,
   messages: [],
 
+  hasMore: true,
+  nextCursor: null,
+  isLoadingPrev: false,
+
+  setIsLoadingPrev: (value) =>
+    set({
+      isLoadingPrev: value,
+    }),
+
   setSession: (roomId, visitor) =>
     set({
       roomId,
       visitor,
     }),
 
-  setMessages: (messages) =>
-    set({
-      messages,
-    }),
+  setMessages: ({ messages, hasMore, nextCursor }) =>
+    set({ messages, hasMore, nextCursor }),
   addMessage: (message) =>
     set((state) => ({
-      messages: [...state.messages, message],
+      messages: [message, ...state.messages],
+    })),
+
+  prependMessages: (prev, hasMore, nextCursor) =>
+    set((state) => ({
+      messages: [...state.messages, ...prev],
+      hasMore,
+      nextCursor,
     })),
 
   reset: () =>
     set({
       roomId: null,
       visitor: null,
+      messages: [],
+      hasMore: true,
+      isLoadingPrev: false,
+      nextCursor: null,
     }),
 }));
