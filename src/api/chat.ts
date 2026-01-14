@@ -9,7 +9,9 @@ import { widgetApi } from "./axios";
 // 위젯 사용 가능 여부 확인
 export const checkWidgetInit = async () => {
   try {
-    const response = await widgetApi.get<WidgetInitResponse>("/widget/config");
+    const response = await widgetApi.get<WidgetInitResponse>(
+      "/api/widget/config"
+    );
     return response.data;
   } catch (error) {
     return {
@@ -26,7 +28,7 @@ export const joinChattingRoom = async (data: {
 }) => {
   try {
     const response = await widgetApi.post<ChattingRoomResponse>(
-      "/widget/init",
+      "/api/widget/init",
       {
         name: data.name,
         email: data.email,
@@ -45,7 +47,7 @@ export const joinChattingRoom = async (data: {
 export const getMessages = async (conversationId: string) => {
   try {
     const response = await widgetApi.get<MessagesResponse>(
-      `/widget/${conversationId}`
+      `/api/widget/${conversationId}`
     );
     return response.data;
   } catch (error) {
@@ -64,7 +66,7 @@ export const sendMessage = async (
 ) => {
   try {
     const response = await widgetApi.post<MessageResponse>(
-      `/widget/${conversationId}/message`,
+      `/api/widget/${conversationId}/message`,
       {
         visitorId,
         content,

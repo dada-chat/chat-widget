@@ -5,6 +5,7 @@ import { checkWidgetInit } from "./api/chat";
 import { ChatMessage } from "./components/ChatMessage";
 import { useChatStore } from "./store/chatStore";
 import ChattingRoom from "./components/ChattingRoom";
+import { getSocket } from "./lib/socket";
 
 export function WidgetApp() {
   console.log("WidgetApp render");
@@ -15,6 +16,9 @@ export function WidgetApp() {
   const { roomId, reset } = useChatStore();
 
   const handleClose = () => {
+    const socket = getSocket(); // 소켓 종료
+    socket.disconnect();
+
     reset(); // store 초기화
     setOpen(false);
   };
