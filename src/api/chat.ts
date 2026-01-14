@@ -64,9 +64,12 @@ export const getMessages = async (
     return {
       success: false,
       data: {
-        messages: [],
-        hasMore: false,
-        nextCursor: null,
+        conversationStatus: "OPEN",
+        messageCursorResult: {
+          messages: [],
+          hasMore: false,
+          nextCursor: null,
+        },
       },
     };
   }

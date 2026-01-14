@@ -7,6 +7,7 @@ import styles from "../widget.module.css";
 import { getMessages } from "../api/chat";
 import { getSocket } from "../lib/socket";
 import clsx from "clsx";
+import type { ChattingRoomStatus } from "../types/common";
 
 export default function ChattingRoom() {
   const {
@@ -19,6 +20,7 @@ export default function ChattingRoom() {
     addMessage,
     setIsLoadingPrev,
     prependMessages,
+    setChattingroomStatus,
   } = useChatStore();
 
   useEffect(() => {
@@ -26,7 +28,12 @@ export default function ChattingRoom() {
 
     const fetchMessages = async () => {
       const result = await getMessages(roomId);
-      if (result.success) setMessages(result.data);
+      if (result.success) {
+        setMessages(result.data.messageCursorResult);
+        setChattingroomStatus(
+          result.data.conversationStatus as ChattingRoomStatus
+        );
+      }
     };
 
     fetchMessages();
@@ -49,9 +56,9 @@ export default function ChattingRoom() {
 
       if (result.success) {
         prependMessages(
-          result.data.messages,
-          result.data.hasMore,
-          result.data.nextCursor
+          result.data.messageCursorResult.messages,
+          result.data.messageCursorResult.hasMore,
+          result.data.messageCursorResult.nextCursor
         );
       }
 
@@ -86,10 +93,15 @@ export default function ChattingRoom() {
       addMessage(newMessage);
     });
 
+    socket.on("update_conversation_status", ({ status }) => {
+      setChattingroomStatus(status);
+    });
+
     return () => {
       socket.off("message_received");
+      socket.off("update_conversation_status");
     };
-  }, [roomId, addMessage]);
+  }, [roomId, addMessage, setChattingroomStatus]);
 
   return (
     <>

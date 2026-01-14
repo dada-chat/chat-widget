@@ -1,4 +1,4 @@
-import type { UserRole, SenderType, ChattingRoomStatus } from "./common";
+import type { SenderType, ChattingRoomStatus } from "./common";
 
 export interface Message {
   id: string;
@@ -28,6 +28,5 @@ export interface ChattingRoom {
     visitorId: string;
     createdAt: Date;
     updatedAt: Date;
-    messages: Message[];
   };
 }

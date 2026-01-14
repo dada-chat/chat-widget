@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import type { Message } from "../types/chat";
+import type { ChattingRoomStatus } from "../types/common";
 
 interface Visitor {
   id: string;
@@ -11,13 +12,20 @@ interface ChatState {
   roomId: string | null;
   visitor: Visitor | null;
   messages: Message[];
+  chattingroomStatus: ChattingRoomStatus;
 
   hasMore: boolean;
   nextCursor: Date | null;
   isLoadingPrev: boolean;
-  setIsLoadingPrev: (value: boolean) => void;
 
-  setSession: (roomId: string, visitor: Visitor) => void;
+  setIsLoadingPrev: (value: boolean) => void;
+  setChattingroomStatus: (value: ChattingRoomStatus) => void;
+
+  setSession: (
+    roomId: string,
+    visitor: Visitor,
+    chattingroomStatus: ChattingRoomStatus
+  ) => void;
 
   setMessages: (payload: {
     messages: Message[];
@@ -38,20 +46,27 @@ export const useChatStore = create<ChatState>((set) => ({
   roomId: null,
   visitor: null,
   messages: [],
+  chattingroomStatus: "OPEN",
 
   hasMore: true,
   nextCursor: null,
   isLoadingPrev: false,
+
+  setChattingroomStatus: (value) =>
+    set({
+      chattingroomStatus: value,
+    }),
 
   setIsLoadingPrev: (value) =>
     set({
       isLoadingPrev: value,
     }),
 
-  setSession: (roomId, visitor) =>
+  setSession: (roomId, visitor, chattingroomStatus) =>
     set({
       roomId,
       visitor,
+      chattingroomStatus,
     }),
 
   setMessages: ({ messages, hasMore, nextCursor }) =>
@@ -73,6 +88,7 @@ export const useChatStore = create<ChatState>((set) => ({
       roomId: null,
       visitor: null,
       messages: [],
+      chattingroomStatus: "OPEN",
       hasMore: true,
       isLoadingPrev: false,
       nextCursor: null,

@@ -11,7 +11,7 @@ interface MessageFormProps {
 
 export default function MessageForm({ onSendSuccess }: MessageFormProps) {
   const [text, setText] = useState("");
-  const { roomId, visitor } = useChatStore();
+  const { roomId, visitor, chattingroomStatus } = useChatStore();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -30,6 +30,8 @@ export default function MessageForm({ onSendSuccess }: MessageFormProps) {
     setText("");
   };
 
+  console.log("chattingroomStatus:", chattingroomStatus);
+
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
       handleSubmit(e);
@@ -45,12 +47,20 @@ export default function MessageForm({ onSendSuccess }: MessageFormProps) {
         <FormInput
           type="text"
           required
-          placeholder="메세지를 입력해주세요."
+          placeholder={
+            chattingroomStatus === "CLOSED"
+              ? "상담이 종료되었습니다."
+              : "메시지를 입력하세요"
+          }
           value={text}
           onChange={setText}
           onKeyDown={(e) => handleKeyPress(e)}
+          disabled={chattingroomStatus === "CLOSED" ? true : false}
         />
-        <button type="submit">
+        <button
+          type="submit"
+          disabled={chattingroomStatus === "CLOSED" ? true : false}
+        >
           <img src="/images/ico_send.svg" />
         </button>
       </div>

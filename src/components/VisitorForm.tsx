@@ -21,11 +21,15 @@ export default function VisitorForm() {
     try {
       const result = await joinChattingRoom({ name, email });
       if (result.success && result.data) {
-        setSession(result.data.conversation.id, {
-          id: result.data.visitor.id,
-          name,
-          email,
-        });
+        setSession(
+          result.data.conversation.id,
+          {
+            id: result.data.visitor.id,
+            name,
+            email,
+          },
+          result.data.conversation.status
+        );
 
         // setMessages(result.data.conversation.messages);
       }
