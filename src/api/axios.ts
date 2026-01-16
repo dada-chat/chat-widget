@@ -1,7 +1,7 @@
 import axios from "axios";
-import { getWidgetConfig } from "../config/widgetConfig";
+import { getRuntimeConfig } from "../config/runtimeConfig";
 
-const config = getWidgetConfig();
+const config = getRuntimeConfig();
 
 export const widgetApi = axios.create({
   baseURL: config.apiBaseUrl,

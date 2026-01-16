@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { useChatStore } from "../store/chatStore";
 import MessageForm from "./MessageForm";
 import { formatChatDate } from "../utils/date";

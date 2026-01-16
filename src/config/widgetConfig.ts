@@ -1,20 +1,40 @@
 export interface WidgetConfig {
-  siteKey?: string;
-  apiBaseUrl?: string;
-  socketUrl?: string;
+  siteKey: string;
+  apiBaseUrl: string;
+  socketUrl: string;
 }
 
-export const getWidgetConfig = (): WidgetConfig => {
-  const scriptTag = document.currentScript as HTMLScriptElement;
+export const getWidgetConfig = (): WidgetConfig | null => {
+  const script = document.querySelector(
+    'script[src*="widget.js"][data-dadachat-site-key]'
+  ) as HTMLScriptElement | null;
 
-  const apiBaseUrl =
-    scriptTag?.dataset.dadachatApiBase || "http://localhost:4000";
+  if (!script) {
+    console.error("[Dadachat] Widget script tag not found.");
+    return null;
+  }
+
+  const siteKey = script.dataset.dadachatSiteKey;
+
+  if (!siteKey) {
+    console.error("[Dadachat] data-dadachat-site-key is required.");
+    return null;
+  }
+
+  const isLocal =
+    location.hostname === "localhost" || location.hostname === "127.0.0.1";
+
+  const DEFAULT_API_BASE = isLocal
+    ? "http://localhost:4000"
+    : "https://dadachat-backend.onrender.com";
+
+  const apiBaseUrl = DEFAULT_API_BASE;
+
+  const socketUrl = apiBaseUrl;
 
   return {
-    siteKey:
-      scriptTag?.dataset.dadachatSiteKey ||
-      "67cf9dd7-564a-4f89-a038-95c89230a66f",
+    siteKey,
     apiBaseUrl,
-    socketUrl: apiBaseUrl,
+    socketUrl,
   };
 };

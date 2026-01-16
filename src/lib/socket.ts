@@ -1,12 +1,12 @@
 // src/lib/socket.ts
 import { io, Socket } from "socket.io-client";
-import { getWidgetConfig } from "../config/widgetConfig";
+import { getRuntimeConfig } from "../config/runtimeConfig";
 
 let socket: Socket | null = null;
 
 export const getSocket = () => {
   if (!socket) {
-    const { socketUrl } = getWidgetConfig();
+    const { socketUrl } = getRuntimeConfig();
     socket = io(socketUrl!, {
       transports: ["websocket"],
       autoConnect: false,
