@@ -1,23 +1,26 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { joinChattingRoom } from "../api/chat";
 import { useChatStore } from "../store/chatStore";
 import FormInput from "./FormInput";
 import styles from "./form.module.css";
 import clsx from "clsx";
+import { validateEmail } from "../utils/validation";
 
 export default function VisitorForm() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
-  const { setSession, setMessages } = useChatStore();
+  const { setSession } = useChatStore();
+
+  const isFormValid = useMemo(() => {
+    return name.trim().length > 0 && validateEmail(email);
+  }, [name, email]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!name.trim() || !email.trim()) {
-      setErrorMessage("이름과 이메일을 모두 입력해 주세요.");
-      return;
-    }
+    if (!isFormValid) return;
+
     try {
       const result = await joinChattingRoom({ name, email });
       if (result.success && result.data) {
@@ -50,6 +53,11 @@ export default function VisitorForm() {
             placeholder="email@example.com"
             value={email}
             onChange={setEmail}
+            error={
+              email && !validateEmail(email)
+                ? "유효한 이메일을 입력해주세요"
+                : undefined
+            }
           />
           <FormInput
             label="이름"

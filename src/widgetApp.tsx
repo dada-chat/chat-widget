@@ -7,11 +7,13 @@ import { useChatStore } from "./store/chatStore";
 import ChattingRoom from "./components/ChattingRoom";
 import { getSocket } from "./lib/socket";
 
+type WidgetStatus = "IDLE" | "LOADING" | "AVAILABLE" | "ERROR";
+
 export function WidgetApp() {
   console.log("WidgetApp render");
 
   const [open, setOpen] = useState(false);
-  const [available, setAvailable] = useState<boolean>(false);
+  const [status, setStatus] = useState<WidgetStatus>("IDLE");
 
   const { roomId, reset } = useChatStore();
 
@@ -24,15 +26,15 @@ export function WidgetApp() {
   };
 
   const handleClick = async () => {
+    setOpen(true);
+    setStatus("LOADING");
     try {
       const result = await checkWidgetInit();
-      if (result.success) setAvailable(true);
+      if (result.success) setStatus("AVAILABLE");
     } catch (err) {
       console.error(err);
-      setAvailable(false);
-      //alert("위젯 상태를 확인할 수 없습니다.");
+      setStatus("ERROR");
     }
-    setOpen(true);
   };
 
   return (
@@ -45,7 +47,13 @@ export function WidgetApp() {
               <img src="/images/ico_close.svg" alt="닫기" />
             </button>
           </div>
-          {open && available && (
+          {open && status === "LOADING" && (
+            <div className={styles.widgetNodata}>
+              <img src="/images/ico_symbol.svg" alt="다다챗" />
+              <p>현재 위젯 서비스를 연결 중...</p>
+            </div>
+          )}
+          {open && status === "AVAILABLE" && (
             <div className={styles.widgetContent}>
               {!roomId ? (
                 <div className={styles.chatList}>
@@ -65,13 +73,13 @@ export function WidgetApp() {
               )}
             </div>
           )}
-          {open && available === false && (
+          {open && status === "ERROR" && (
             <div className={styles.widgetNodata}>
               <img src="/images/ico_message_off.svg" alt="메세지 아이콘" />
               <p>
                 현재 채팅 위젯 사용이 불가합니다.
                 <br />
-                관리자에게 문의하세요.
+                잠시 후 다시 시도해주세요.
               </p>
             </div>
           )}
