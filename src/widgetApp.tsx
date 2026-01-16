@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import styles from "./widget.module.css";
 import VisitorForm from "./components/VisitorForm";
 import { checkWidgetInit } from "./api/chat";
@@ -6,6 +6,7 @@ import { ChatMessage } from "./components/ChatMessage";
 import { useChatStore } from "./store/chatStore";
 import ChattingRoom from "./components/ChattingRoom";
 import { getSocket } from "./lib/socket";
+import { getRuntimeConfig } from "./config/runtimeConfig";
 
 type WidgetStatus = "IDLE" | "LOADING" | "AVAILABLE" | "ERROR";
 
@@ -16,6 +17,7 @@ export function WidgetApp() {
   const [status, setStatus] = useState<WidgetStatus>("IDLE");
 
   const { roomId, reset } = useChatStore();
+  const { apiBaseUrl } = getRuntimeConfig();
 
   const handleClose = () => {
     const socket = getSocket(); // 소켓 종료
@@ -36,6 +38,16 @@ export function WidgetApp() {
       setStatus("ERROR");
     }
   };
+
+  useEffect(() => {
+    // 서버 깨우기
+    const wakeUpServer = async () => {
+      try {
+        await fetch(`${apiBaseUrl}/health`);
+      } catch {}
+    };
+    wakeUpServer();
+  }, []);
 
   return (
     <div className={styles.widgetRoot}>
