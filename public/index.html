@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chat Widget 안내 페이지</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        font-family: sans-serif;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        background-color: #f4f7f9;
+      }
+      .card {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 92%;
+        max-width: 380px;
+        justify-content: center;
+        gap: 24px;
+        background: white;
+        padding: 40px;
+        border-radius: 8px;
+        box-shadow: 0 0px 8px rgba(0, 0, 0, 0.1);
+        text-align: center;
+      }
+      .text-box {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+      }
+      code {
+        background: #eee;
+        padding: 0.2rem 0.5rem;
+        border-radius: 4px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="card">
+      <img src="./ico_symbol.svg" />
+      <div class="text-box">
+        <h1>DadaChat, widget</h1>
+        <p>
+          이 위젯에 대한 코드를 확인하려면,<br />
+          아래 스크립트 경로를 확인해주세요.
+        </p>
+      </div>
+      <code>&lt;script src="./widget.js"&gt;&lt;/script&gt;</code>
+    </div>
+  </body>
+</html>
