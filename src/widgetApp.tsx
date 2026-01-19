@@ -10,6 +10,14 @@ import { getRuntimeConfig } from "./config/runtimeConfig";
 
 type WidgetStatus = "IDLE" | "LOADING" | "AVAILABLE" | "ERROR";
 
+const BASE_URL = import.meta.env.BASE_URL.replace(/\/$/, "");
+
+const ICONS = {
+  widget: `${BASE_URL}/images/ico_widget.svg`,
+  close: `${BASE_URL}/images/ico_close.svg`,
+  messageOff: `${BASE_URL}/images/ico_message_off.svg`,
+  symbol: `${BASE_URL}/images/ico_symbol.svg`,
+};
 export function WidgetApp() {
   console.log("WidgetApp render");
 
@@ -56,12 +64,12 @@ export function WidgetApp() {
           <div className={styles.header}>
             상담 채팅
             <button className={styles.closeButton} onClick={handleClose}>
-              <img src="/images/ico_close.svg" alt="닫기" />
+              <img src={ICONS.close} alt="닫기" />
             </button>
           </div>
           {open && status === "LOADING" && (
             <div className={styles.widgetNodata}>
-              <img src="/images/ico_symbol.svg" alt="다다챗" />
+              <img src={ICONS.symbol} alt="다다챗" />
               <p>현재 위젯 서비스를 연결 중...</p>
             </div>
           )}
@@ -87,7 +95,7 @@ export function WidgetApp() {
           )}
           {open && status === "ERROR" && (
             <div className={styles.widgetNodata}>
-              <img src="/images/ico_message_off.svg" alt="메세지 아이콘" />
+              <img src={ICONS.messageOff} alt="메세지 아이콘" />
               <p>
                 현재 채팅 위젯 사용이 불가합니다.
                 <br />
@@ -99,7 +107,7 @@ export function WidgetApp() {
       )}
 
       <button className={styles.floatingButton} onClick={handleClick}>
-        <img src="/images/ico_widget.svg" alt="다다챗" />
+        <img src={ICONS.widget} alt="다다챗" />
       </button>
     </div>
   );

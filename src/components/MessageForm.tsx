@@ -9,6 +9,12 @@ interface MessageFormProps {
   onSendSuccess?: () => void;
 }
 
+const BASE_URL = import.meta.env.BASE_URL.replace(/\/$/, "");
+
+const ICONS = {
+  send: `${BASE_URL}/images/ico_send.svg`,
+};
+
 export default function MessageForm({ onSendSuccess }: MessageFormProps) {
   const [text, setText] = useState("");
   const { roomId, visitor, chattingroomStatus } = useChatStore();
@@ -58,7 +64,7 @@ export default function MessageForm({ onSendSuccess }: MessageFormProps) {
           type="submit"
           disabled={chattingroomStatus === "CLOSED" ? true : false}
         >
-          <img src="/images/ico_send.svg" />
+          <img src={ICONS.send} />
         </button>
       </div>
     </form>
