@@ -30,10 +30,6 @@ export default function FormInput({
       <input
         type={type}
         required={required}
-        className={clsx(
-          "relative block w-full h-12 rounded-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-500 focus:z-10 focus:border-primary focus:outline-none",
-          disabled && "bg-gray-200 !text-gray-500"
-        )}
         placeholder={placeholder}
         value={value}
         disabled={disabled}

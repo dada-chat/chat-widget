@@ -39,10 +39,7 @@ export default function MessageForm({ onSendSuccess }: MessageFormProps) {
   };
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="fixed bottom-20 right-4 p-4 bg-white shadow-lg rounded w-64 flex flex-col gap-2"
-    >
+    <form onSubmit={handleSubmit}>
       <div className={clsx(styles.formWrap, styles.massageWrap)}>
         <FormInput
           type="text"
