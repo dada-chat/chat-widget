@@ -99,7 +99,7 @@ export function WidgetApp() {
       )}
 
       <button className={styles.floatingButton} onClick={handleClick}>
-        <img src="/images/ico_symbol.svg" alt="다다챗" />
+        <img src="/images/ico_widget.svg" alt="다다챗" />
       </button>
     </div>
   );
