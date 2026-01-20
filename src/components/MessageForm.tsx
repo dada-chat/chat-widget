@@ -17,23 +17,26 @@ const ICONS = {
 
 export default function MessageForm({ onSendSuccess }: MessageFormProps) {
   const [text, setText] = useState("");
+  const [isSending, setIsSending] = useState(false);
   const { roomId, visitor, chattingroomStatus } = useChatStore();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!roomId || !visitor || !text.trim()) return;
 
+    setIsSending(true);
     try {
       const result = await sendMessage(roomId, visitor?.id, text);
 
       if (result.success) {
-        setText("");
         onSendSuccess?.();
       }
     } catch (err) {
       console.error(err);
+    } finally {
+      setText("");
+      setIsSending(false);
     }
-    setText("");
   };
 
   console.log("chattingroomStatus:", chattingroomStatus);
@@ -58,11 +61,11 @@ export default function MessageForm({ onSendSuccess }: MessageFormProps) {
           value={text}
           onChange={setText}
           onKeyDown={(e) => handleKeyPress(e)}
-          disabled={chattingroomStatus === "CLOSED" ? true : false}
+          disabled={chattingroomStatus === "CLOSED"}
         />
         <button
           type="submit"
-          disabled={chattingroomStatus === "CLOSED" ? true : false}
+          disabled={chattingroomStatus === "CLOSED" || isSending}
         >
           <img src={ICONS.send} />
         </button>
