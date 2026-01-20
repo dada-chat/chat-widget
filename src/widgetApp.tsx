@@ -40,7 +40,11 @@ export function WidgetApp() {
     setStatus("LOADING");
     try {
       const result = await checkWidgetInit();
-      if (result.success) setStatus("AVAILABLE");
+      if (result.success) {
+        setStatus("AVAILABLE");
+      } else {
+        setStatus("ERROR");
+      }
     } catch (err) {
       console.error(err);
       setStatus("ERROR");
