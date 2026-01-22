@@ -1,73 +1,59 @@
-# React + TypeScript + Vite
+# DadaChat Widget
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+외부 웹사이트에 `<script>` 한 줄로 삽입 가능한  
+**React 기반 고객 문의(Chat) 위젯**입니다.
 
-Currently, two official plugins are available:
+DadaChat 서비스의 진입점 역할을 하며,  
+웹사이트 방문자가 관리자에게 문의를 남길 수 있는 UI를 제공합니다.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+---
 
-## React Compiler
+## System Overview
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+DadaChat은 아래 3개의 독립적인 애플리케이션으로 구성되어 있습니다.
 
-## Expanding the ESLint configuration
+- **Widget**: 외부 웹사이트에 삽입되는 고객 문의 UI
+- **Dashboard**: 관리자가 문의를 확인하고 응답하는 관리자 화면
+- **Backend API**: 인증, 데이터 저장, 실시간 통신을 담당하는 서버
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+이 레포지토리는 그 중 **Widget** 영역을 담당합니다.
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+---
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+## Tech Stack
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+- React
+- Vite
+- TypeScript
+- Socket.io Client
+- Zustand (visitor, chattingroom, messages state)
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+---
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## Why React + Vite Widget?
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+단순 JavaScript 스크립트가 아닌  
+**React 기반 위젯**으로 구현한 이유는 다음과 같습니다.
+
+- 위젯의 다양한 UI 상태  
+  (열림/닫힘, 채팅 상태, 로딩, 입력 단계 등)을 명확하게 관리
+- Vite를 활용해 빠른 개발 환경 구성 및 번들링 최적화
+- 관리자 대시보드와 기술 스택 일부 공유 가능
+  (관리자 대시보드(Next.js)와 동일한 React + TypeScript 기반으로,
+  컴포넌트 설계와 상태 관리 방식의 일관성을 유지할 수 있음)
+- 추후 기능 확장에도 유리
+
+---
+
+## Usage
+
+웹사이트의 `<body>` 하단에 아래 스크립트를 삽입하면  
+위젯이 자동으로 로드됩니다.
+(대시보드에서 등록한 도메인에서 스크립트를 복사할 수 있습니다.)
+
+```html
+<script
+  src="WIDGET_BASE_URL/widget.js"
+  data-dadachat-site-key="SITE_KEY"
+></script>
 ```
