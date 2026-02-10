@@ -75,6 +75,7 @@
   color: #888;
   flex: 1;
   display: flex;
+  gap: 4px;
   flex-direction: column;
   justify-content: center;
   align-items: center;

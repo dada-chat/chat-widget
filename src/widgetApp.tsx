@@ -63,32 +63,40 @@ export function WidgetApp() {
     };
     wakeUpServer();
 
-    const checkScript = () => {
-      const scriptTag = document.querySelector(
-        "script[data-dadachat-site-key]"
-      );
-      const hasScript = !!scriptTag;
+    let timerId: ReturnType<typeof setTimeout>;
+    const checkScriptAndPath = () => {
+      if (timerId) clearTimeout(timerId);
 
-      setIsVisible(hasScript);
+      // 0.1초 뒤에 체크 (DOM 변화 대기)
+      timerId = setTimeout(() => {
+        const scriptTag = document.querySelector(
+          "script[data-dadachat-site-key]"
+        );
 
-      if (!hasScript) {
-        const socket = getSocket();
-        if (socket) socket.disconnect();
-        setOpen(false);
-      }
+        if (!scriptTag) {
+          console.log("위젯 해제");
+          const socket = getSocket();
+          if (socket) socket.disconnect();
+          setIsVisible(false);
+          setOpen(false);
+        } else {
+          setIsVisible(true);
+        }
+      }, 100);
     };
 
     // SPA 라우팅 감지 로직
     const originalPushState = history.pushState;
     history.pushState = function (...args) {
       originalPushState.apply(this, args);
-      checkScript();
+      checkScriptAndPath();
     };
-    window.addEventListener("popstate", checkScript);
+    window.addEventListener("popstate", checkScriptAndPath);
 
     return () => {
+      if (timerId) clearTimeout(timerId);
       history.pushState = originalPushState;
-      window.removeEventListener("popstate", checkScript);
+      window.removeEventListener("popstate", checkScriptAndPath);
     };
   }, []);
 
