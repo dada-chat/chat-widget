@@ -59,6 +59,26 @@ export function WidgetApp() {
       } catch {}
     };
     wakeUpServer();
+
+    return () => {
+      const socket = getSocket();
+      if (socket) {
+        socket.disconnect();
+      }
+
+      const existingWidget = document.getElementById(
+        "__dadachat_widget_root__"
+      );
+      if (existingWidget) {
+        existingWidget.remove();
+      }
+      const scriptTag = document.querySelector(
+        "script[data-dadachat-site-key]"
+      );
+      if (scriptTag) {
+        scriptTag.remove();
+      }
+    };
   }, []);
 
   return (
