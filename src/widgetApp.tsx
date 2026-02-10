@@ -24,6 +24,8 @@ export function WidgetApp() {
   const [isVisible, setIsVisible] = useState(
     !!document.querySelector("script[data-dadachat-site-key]")
   );
+  const [originPath] = useState(window.location.pathname);
+
   const [open, setOpen] = useState(false);
   const [status, setStatus] = useState<WidgetStatus>("IDLE");
 
@@ -62,45 +64,41 @@ export function WidgetApp() {
       } catch {}
     };
     wakeUpServer();
+  }, []);
 
-    let timerId: ReturnType<typeof setTimeout>;
-    const checkScriptAndPath = () => {
-      if (timerId) clearTimeout(timerId);
+  useEffect(() => {
+    const checkPathIntegrity = () => {
+      const currentPath = window.location.pathname;
 
-      // 0.1초 뒤에 체크 (DOM 변화 대기)
-      timerId = setTimeout(() => {
-        const scriptTag = document.querySelector(
-          "script[data-dadachat-site-key]"
-        );
+      if (currentPath !== originPath) {
+        console.log("위젯 자원 정리");
 
-        if (!scriptTag) {
-          console.log("위젯 해제");
-          const socket = getSocket();
-          if (socket) socket.disconnect();
-          setIsVisible(false);
-          setOpen(false);
-        } else {
-          setIsVisible(true);
-        }
-      }, 300);
+        // 소켓 끊기
+        const socket = getSocket();
+        if (socket) socket.disconnect();
+
+        setIsVisible(false);
+        setOpen(false);
+      } else {
+        setIsVisible(true);
+      }
     };
 
-    checkScriptAndPath();
-
-    // SPA 라우팅 감지 로직
+    // 3. SPA 라우팅 가로채기
     const originalPushState = history.pushState;
     history.pushState = function (...args) {
       originalPushState.apply(this, args);
-      checkScriptAndPath();
+      // Next.js 라우팅 처리를 위해 약간의 지연 후 체크
+      setTimeout(checkPathIntegrity, 100);
     };
-    window.addEventListener("popstate", checkScriptAndPath);
+
+    window.addEventListener("popstate", checkPathIntegrity);
 
     return () => {
-      if (timerId) clearTimeout(timerId);
       history.pushState = originalPushState;
-      window.removeEventListener("popstate", checkScriptAndPath);
+      window.removeEventListener("popstate", checkPathIntegrity);
     };
-  }, []);
+  }, [originPath]);
 
   if (!isVisible) return null;
 
