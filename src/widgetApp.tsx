@@ -21,6 +21,9 @@ const ICONS = {
 export function WidgetApp() {
   console.log("WidgetApp render");
 
+  const [isVisible, setIsVisible] = useState(
+    !!document.querySelector("script[data-dadachat-site-key]")
+  );
   const [open, setOpen] = useState(false);
   const [status, setStatus] = useState<WidgetStatus>("IDLE");
 
@@ -60,26 +63,36 @@ export function WidgetApp() {
     };
     wakeUpServer();
 
-    return () => {
-      const socket = getSocket();
-      if (socket) {
-        socket.disconnect();
-      }
-
-      const existingWidget = document.getElementById(
-        "__dadachat_widget_root__"
-      );
-      if (existingWidget) {
-        existingWidget.remove();
-      }
+    const checkScript = () => {
       const scriptTag = document.querySelector(
         "script[data-dadachat-site-key]"
       );
-      if (scriptTag) {
-        scriptTag.remove();
+      const hasScript = !!scriptTag;
+
+      setIsVisible(hasScript);
+
+      if (!hasScript) {
+        const socket = getSocket();
+        if (socket) socket.disconnect();
+        setOpen(false);
       }
     };
+
+    // SPA 라우팅 감지 로직
+    const originalPushState = history.pushState;
+    history.pushState = function (...args) {
+      originalPushState.apply(this, args);
+      checkScript();
+    };
+    window.addEventListener("popstate", checkScript);
+
+    return () => {
+      history.pushState = originalPushState;
+      window.removeEventListener("popstate", checkScript);
+    };
   }, []);
+
+  if (!isVisible) return null;
 
   return (
     <div className={styles.widgetRoot}>
