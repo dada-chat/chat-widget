@@ -82,8 +82,10 @@ export function WidgetApp() {
         } else {
           setIsVisible(true);
         }
-      }, 100);
+      }, 300);
     };
+
+    checkScriptAndPath();
 
     // SPA 라우팅 감지 로직
     const originalPushState = history.pushState;
